@@ -14,7 +14,15 @@ class Api::V1::CustomerSubscriptionsController < ApplicationController
   end
 
   def toggle_active
-    
+    if params[:customer_id].present? && params[:subscription_id].present?
+      cust_sub = CustomerSubscription.find_by(customer_subscription_params)
+
+      cust_sub.toggle!(:active)
+      
+      render json: CustomerSubscriptionSerializer.new(cust_sub)
+    else
+      render json: { errors: 'Existing customer ID and subscription ID must be present', status: 400 }, status: :bad_request
+    end
   end
 
   private
