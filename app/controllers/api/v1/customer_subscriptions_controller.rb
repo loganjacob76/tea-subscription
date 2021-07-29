@@ -1,6 +1,11 @@
 class Api::V1::CustomerSubscriptionsController < ApplicationController
   def show
-    
+    cust_subs = CustomerSubscription.where(customer_id: params[:id])
+    if cust_subs.present?
+      render json: CustomerSubscriptionSerializer.new(cust_subs)
+    else
+      render json: { errors: 'Existing customer ID must be present', status: 400 }, status: :bad_request
+    end
   end
 
   def create
